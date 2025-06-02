@@ -1,26 +1,19 @@
-module UpDown_Counter_Test;
-    reg clk;
-    reg reset;
-    reg up_down;
-  wire [3:0] count;
+module UpDown_Counter (
+    input clk,
+    input reset,
+    input up_down,        // 1: Count Up, 0: Count Down
+    output reg [3:0] count
+);
 
-    UpDown_Counter uut (
-      .clk(clk),
-      .reset(reset),
-      .up_down(up_down),
-      .count(count)
-    );
-
-    initial clk = 0;
-    always #5 clk = ~clk;
-
-    initial begin
-        $dumpfile("updown_counter.vcd");
-      $dumpvars(0, UpDown_Counter_Test);
-
-        reset = 1;
-        #10 reset = 0; up_down= 1;
-        #50 up_down= 0;
-        #50 $finish;
+always @(posedge clk or posedge reset) begin
+    if (reset)
+        count <= 4'b0000;
+    else begin
+        if (up_down)
+            count <= count + 1;
+        else
+            count <= count - 1;
     end
+end
+
 endmodule
